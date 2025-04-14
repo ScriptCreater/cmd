@@ -7,7 +7,6 @@ UserInputService.InputBegan:Connect(function(input, isTyping)
     if isTyping then return end
     if input.KeyCode == Enum.KeyCode.V then
         running = false
-        print("Loop stopped")
     end
 end)
 
