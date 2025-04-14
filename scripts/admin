@@ -1,0 +1,59 @@
+local player = game:GetService("Players").LocalPlayer
+local screenGui = Instance.new("ScreenGui")
+local textBox = Instance.new("TextBox")
+local userInputService = game:GetService("UserInputService")
+
+screenGui.Parent = player:FindFirstChildOfClass("PlayerGui")
+screenGui.Enabled = false
+
+textBox.Parent = screenGui
+textBox.Size = UDim2.new(0.3, 0, 0.05, 0)
+textBox.Position = UDim2.new(0.35, 0, 0.45, 0)
+textBox.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+textBox.TextColor3 = Color3.fromRGB(0, 163, 203)
+textBox.Text = ""
+textBox.ClearTextOnFocus = true
+textBox.PlaceholderText = "Type cmds for commands!!!"
+textBox.PlaceholderColor3 = Color3.fromRGB(0, 163, 203)
+
+local function closeGui()
+    screenGui.Enabled = false
+    textBox.Text = ""
+end
+
+textBox.FocusLost:Connect(function(enterPressed)
+    if enterPressed then
+        local command = textBox.Text:lower()
+        closeGui()
+
+        if command == "instantproximityprompts" or command == "ipp" then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/instantproximityprompts"))()
+        elseif command == "cmds" or command == "commands" then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/commands"))()
+        elseif command == "al" or command == "aimlock" then 
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/aimlock"))()
+        elseif string.sub(command, 1, 11) == "loopexecute" or string.sub(command, 1, 4) == "lexe" then
+            local target = string.match(command, " +(.+)")
+            if not target then
+                target = "all"
+            end
+            _G.LoopExecuteTarget = target
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/loopexecute.lua"))()
+        elseif command == "unloopexecute" or command == "unlexe" then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/unloopexecute"))()
+        end
+    else
+        closeGui()
+    end
+end)
+
+userInputService.InputBegan:Connect(function(input, gameProcessed)
+    if not gameProcessed and input.KeyCode == Enum.KeyCode.Comma then
+        screenGui.Enabled = not screenGui.Enabled
+
+        if screenGui.Enabled then
+            task.wait()
+            textBox:CaptureFocus()
+        end
+    end
+end)
