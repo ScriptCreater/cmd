@@ -1,1 +1,3 @@
-
+if _G.LoopExecuteRunning then
+    _G.LoopExecuteRunning = false
+end
