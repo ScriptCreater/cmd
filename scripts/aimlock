@@ -1,0 +1,81 @@
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
+local Camera = workspace.CurrentCamera
+local LocalPlayer = Players.LocalPlayer
+local aimbotEnabled = true
+local alwaysOn = false
+
+local focusRadius = 100
+local moveSpeed = 0.3
+local deadzoneRadius = 5
+local pullStrength = 0.05
+local killKey = Enum.KeyCode.K
+local toggleAlwaysKey = Enum.KeyCode.L
+
+local function moveMouseTo(targetX, targetY)
+    local mousePos = UserInputService:GetMouseLocation()
+    local dx, dy = targetX - mousePos.X, targetY - mousePos.Y
+
+    if math.abs(dx) < deadzoneRadius and math.abs(dy) < deadzoneRadius then
+        mousemoverel(dx * pullStrength, dy * pullStrength)
+        return
+    end
+
+    local newX = mousePos.X + dx * moveSpeed
+    local newY = mousePos.Y + dy * moveSpeed
+
+    mousemoverel(newX - mousePos.X, newY - mousePos.Y)
+end
+
+local function isVisible(targetPart)
+    local origin = Camera.CFrame.Position
+    local direction = (targetPart.Position - origin).Unit * (targetPart.Position - origin).Magnitude
+    local raycastParams = RaycastParams.new()
+    raycastParams.FilterDescendantsInstances = {LocalPlayer.Character}
+    raycastParams.FilterType = Enum.RaycastFilterType.Blacklist
+    local result = workspace:Raycast(origin, direction, raycastParams)
+
+    return result and result.Instance and result.Instance:IsDescendantOf(targetPart.Parent)
+end
+
+local function getNearestTarget()
+    local nearestPlayer = nil
+    local shortestDistance = focusRadius
+    local mousePos = UserInputService:GetMouseLocation()
+
+    for _, player in ipairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Team ~= LocalPlayer.Team and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local hrp = player.Character.HumanoidRootPart
+            local screenPos, onScreen = Camera:WorldToViewportPoint(hrp.Position)
+            if onScreen and isVisible(hrp) then
+                local dist = (Vector2.new(screenPos.X, screenPos.Y) - Vector2.new(mousePos.X, mousePos.Y)).Magnitude
+                if dist < shortestDistance then
+                    nearestPlayer = player
+                    shortestDistance = dist
+                end
+            end
+        end
+    end
+
+    return nearestPlayer
+end
+
+UserInputService.InputBegan:Connect(function(input)
+    if input.KeyCode == killKey then
+        aimbotEnabled = not aimbotEnabled
+    elseif input.KeyCode == toggleAlwaysKey then
+        alwaysOn = not alwaysOn
+    end
+end)
+
+RunService.RenderStepped:Connect(function()
+    if not aimbotEnabled then return end
+    if not (UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) or alwaysOn) then return end
+
+    local targetPlayer = getNearestTarget()
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local targetPos = Camera:WorldToViewportPoint(targetPlayer.Character.HumanoidRootPart.Position)
+        moveMouseTo(targetPos.X, targetPos.Y)
+    end
+end)
