@@ -1,17 +1,10 @@
 local targetName = _G.LoopExecuteTarget or "all"
-local running = true
+_G.LoopExecuteRunning = true
+
 local Players = game:GetService("Players")
 local RemoteEvent = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("Miscs"):WaitForChild("DeathRowSelect")
 
-local UserInputService = game:GetService("UserInputService")
-UserInputService.InputBegan:Connect(function(input, isTyping)
-    if isTyping then return end
-    if input.KeyCode == Enum.KeyCode.V then
-        running = false
-    end
-end)
-
-while running do
+while _G.LoopExecuteRunning do
     for _, player in ipairs(Players:GetPlayers()) do
         if targetName == "all" or string.find(player.Name:lower(), targetName:lower()) then
             RemoteEvent:FireServer(player)
