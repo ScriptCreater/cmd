@@ -1,0 +1,22 @@
+local running = true
+local UserInputService = game:GetService("UserInputService")
+local Players = game:GetService("Players")
+local RemoteEvent = game:GetService("ReplicatedStorage"):WaitForChild("RemoteEvents"):WaitForChild("Miscs"):WaitForChild("DeathRowSelect")
+
+UserInputService.InputBegan:Connect(function(input, isTyping)
+    if isTyping then return end
+    if input.KeyCode == Enum.KeyCode.V then
+        running = false
+        print("Loop stopped")
+    end
+end)
+
+while running do
+    for _, player in ipairs(Players:GetPlayers()) do
+        local args = {
+            [1] = player
+        }
+        RemoteEvent:FireServer(unpack(args))
+        task.wait(0.1)
+    end
+end
