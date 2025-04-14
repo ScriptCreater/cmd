@@ -38,7 +38,7 @@ textBox.FocusLost:Connect(function(enterPressed)
                 target = "all"
             end
             _G.LoopExecuteTarget = target
-            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/loopexecute.lua"))()
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/main/scripts/loopexecute"))()
         elseif command == "unloopexecute" or command == "unlexe" then
             loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/unloopexecute"))()
         end
