@@ -1,0 +1,102 @@
+local player = game.Players.LocalPlayer
+local character = workspace:FindFirstChild(player.Name)
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+
+if not character then
+    warn("Character not found.")
+    return
+end
+
+-- Tool line mappings
+local toolList = {
+    ["PKM"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("PKMShoot"):FireServer(unpack(args))]],
+    ["Non-Lethal-Shotgun"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Weapons"):WaitForChild("NLShotgunShoot"):FireServer(unpack(args))]],
+    ["Makarov"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("PistolShoot"):FireServer(unpack(args))]],
+    ["MP5"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("MP5Shoot"):FireServer(unpack(args))]],
+    ["M4A1"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("M4A1Shoot"):FireServer(unpack(args))]],
+    ["Glock"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Weapons"):WaitForChild("PistolShoot"):FireServer(unpack(args))]],
+    ["AK-47"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("AK47Shoot"):FireServer(unpack(args))]]
+}
+
+-- Find held tool and get the correct line
+local selectedFireLine = nil
+for toolName, fireLine in pairs(toolList) do
+    if character:FindFirstChild(toolName) then
+        selectedFireLine = fireLine:gsub("{player}", player.Name)
+        break
+    end
+end
+
+if not selectedFireLine then
+    warn("No matching tool found.")
+    return
+end
+
+--[[ === YOUR UNTOUCHED ORIGINAL SCRIPT STARTS HERE === ]]
+local Players = game:GetService("Players")
+local LocalPlayer = Players.LocalPlayer
+local Camera = game.Workspace.CurrentCamera
+
+local function getClosestPlayerToCursor()
+    local mouse = LocalPlayer:GetMouse()
+    local closestPlayer = nil
+    local closestDistance = math.huge
+
+    for _, player in pairs(Players:GetPlayers()) do
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local character = player.Character
+            local humanoidRootPart = character.HumanoidRootPart
+            local screenPosition, onScreen = Camera:WorldToViewportPoint(humanoidRootPart.Position)
+
+            if onScreen then
+                local cursorPosition = Vector2.new(mouse.X, mouse.Y)
+                local screenPoint = Vector2.new(screenPosition.X, screenPosition.Y)
+                local distance = (cursorPosition - screenPoint).Magnitude
+
+                if distance < closestDistance then
+                    closestDistance = distance
+                    closestPlayer = player
+                end
+            end
+        end
+    end
+
+    return closestPlayer
+end
+
+local function shootAtClosestPlayer()
+    local targetPlayer = getClosestPlayerToCursor()
+
+    if targetPlayer and targetPlayer.Character and targetPlayer.Character:FindFirstChild("HumanoidRootPart") then
+        local targetPosition = targetPlayer.Character.HumanoidRootPart.Position
+        local gunPosition = Camera.CFrame.Position
+        local direction = (targetPosition - gunPosition).unit * 500
+        local ray = Ray.new(gunPosition, direction)
+        local hit, position = game.Workspace:FindPartOnRay(ray, LocalPlayer.Character, false, true)
+
+        if hit and hit.Parent == targetPlayer.Character then
+            local args = { [1] = targetPosition }
+            
+            -- dynamically evaluated line instead of hardcoded one
+            loadstring("return function(args) " .. selectedFireLine .. " end")(args)
+        end
+    else
+        warn("No valid target found near the cursor.")
+    end
+end
+
+local mouse = LocalPlayer:GetMouse()
+local isShooting = false
+
+mouse.Button1Down:Connect(function()
+    isShooting = true
+    while isShooting do
+        shootAtClosestPlayer()
+        wait(0.01)
+    end
+end)
+
+mouse.Button1Up:Connect(function()
+    isShooting = false
+end)
+--[[ === END OF YOUR UNTOUCHED SCRIPT === ]]
