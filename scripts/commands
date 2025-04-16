@@ -9,7 +9,7 @@ local MinimizeButton = Instance.new("TextButton")
 local ScrollingFrame = Instance.new("ScrollingFrame")
 
 ScreenGui.Parent = playerGui
-ScreenGui.Enabled = true  -- Make sure the GUI is enabled
+ScreenGui.Enabled = true
 
 Frame.Parent = ScreenGui
 Frame.Size = UDim2.new(0, 300, 0, 300)
@@ -63,9 +63,9 @@ ScrollingFrame.Parent = Frame
 ScrollingFrame.Size = UDim2.new(1, 0, 1, -40)
 ScrollingFrame.Position = UDim2.new(0, 0, 0, 40)
 ScrollingFrame.CanvasSize = UDim2.new(0, 0, 0, 600)
-ScrollingFrame.ScrollBarThickness = 10  -- You can adjust the thickness
-ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(16, 16, 16)  -- Dark gray scrollbar
-ScrollingFrame.ScrollBarImageTransparency = 0.5  -- Adjust transparency of scrollbar
+ScrollingFrame.ScrollBarThickness = 10
+ScrollingFrame.ScrollBarImageColor3 = Color3.fromRGB(16, 16, 16)
+ScrollingFrame.ScrollBarImageTransparency = 0.5
 
 ScrollingFrame.BackgroundTransparency = 1
 ScrollingFrame.BorderSizePixel = 0
