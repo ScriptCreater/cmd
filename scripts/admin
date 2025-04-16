@@ -41,6 +41,8 @@ textBox.FocusLost:Connect(function(enterPressed)
             loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/main/scripts/loopexecute"))()
         elseif command == "unloopexecute" or command == "unlexe" then
             loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/unloopexecute"))()
+        elseif command == "aimassist" or command "as" then
+            loadstring(game:HttpGet("https://raw.githubusercontent.com/ScriptCreater/cmd/refs/heads/main/scripts/aimassist"))()
         end
     else
         closeGui()
