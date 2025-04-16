@@ -76,6 +76,7 @@ local commands = {
     "aimlock / al",
     "loopexecute [target] / lexe [target]",
     "unloopexecute / unlexe"
+    "aimassit / as"
 }
 
 for i, commandText in ipairs(commands) do
