@@ -7,7 +7,6 @@ if not character then
     return
 end
 
--- Tool line mappings
 local toolList = {
     ["PKM"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("PKMShoot"):FireServer(unpack(args))]],
     ["Non-Lethal-Shotgun"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("Weapons"):WaitForChild("NLShotgunShoot"):FireServer(unpack(args))]],
@@ -18,7 +17,6 @@ local toolList = {
     ["AK-47"] = [[ReplicatedStorage:WaitForChild("RemoteEvents"):WaitForChild("PlayerWeaponRemotes"):WaitForChild("{player}"):WaitForChild("AK47Shoot"):FireServer(unpack(args))]]
 }
 
--- Find held tool and get the correct line
 local selectedFireLine = nil
 for toolName, fireLine in pairs(toolList) do
     if character:FindFirstChild(toolName) then
@@ -32,7 +30,6 @@ if not selectedFireLine then
     return
 end
 
---[[ === YOUR UNTOUCHED ORIGINAL SCRIPT STARTS HERE === ]]
 local Players = game:GetService("Players")
 local LocalPlayer = Players.LocalPlayer
 local Camera = game.Workspace.CurrentCamera
@@ -99,4 +96,3 @@ end)
 mouse.Button1Up:Connect(function()
     isShooting = false
 end)
---[[ === END OF YOUR UNTOUCHED SCRIPT === ]]
