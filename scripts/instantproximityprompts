@@ -19,6 +19,5 @@ end)
 game:GetService("UserInputService").InputBegan:Connect(function(input, gameProcessed)
     if not gameProcessed and input.KeyCode == Enum.KeyCode.P then
         loopRunning = false
-        print("Loop stopped.")
     end
 end)
