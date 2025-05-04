@@ -10,8 +10,8 @@ local focusRadius = 100
 local moveSpeed = 0.3
 local deadzoneRadius = 5
 local pullStrength = 0.05
-local killKey = Enum.KeyCode.K
-local toggleAlwaysKey = Enum.KeyCode.L
+local killKey = Enum.KeyCode.RightBracket
+local toggleAlwaysKey = Enum.KeyCode.BackSlash
 
 local function moveMouseTo(targetX, targetY)
     local mousePos = UserInputService:GetMouseLocation()
