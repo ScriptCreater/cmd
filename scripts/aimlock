@@ -13,6 +13,8 @@ local pullStrength = 0.05
 local killKey = Enum.KeyCode.RightBracket
 local toggleAlwaysKey = Enum.KeyCode.BackSlash
 
+local isRightMouseHeld = false
+
 local function moveMouseTo(targetX, targetY)
     local mousePos = UserInputService:GetMouseLocation()
     local dx, dy = targetX - mousePos.X, targetY - mousePos.Y
@@ -62,15 +64,24 @@ local function getNearestTarget()
 end
 
 UserInputService.InputBegan:Connect(function(input)
-    if input.KeyCode == killKey then
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        isRightMouseHeld = true
+    elseif input.KeyCode == killKey then
         aimbotEnabled = not aimbotEnabled
     elseif input.KeyCode == toggleAlwaysKey then
         alwaysOn = not alwaysOn
     end
 end)
 
+UserInputService.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton2 then
+        isRightMouseHeld = false
+    end
+end)
+
 RunService.RenderStepped:Connect(function()
     if not aimbotEnabled then return end
+    if isRightMouseHeld then return end
     if not (UserInputService:IsMouseButtonPressed(Enum.UserInputType.MouseButton1) or alwaysOn) then return end
 
     local targetPlayer = getNearestTarget()
